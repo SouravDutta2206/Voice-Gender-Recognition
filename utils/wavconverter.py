@@ -3,8 +3,6 @@ warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 import os
-import pandas as pd
-import numpy as np
 from tqdm import tqdm
 from pydub import AudioSegment
 from utils.audio_filters import dfn_filter, snr_filter
