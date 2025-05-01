@@ -1,0 +1,7 @@
+# dependencies
+/.venv
+/Commonvoice
+/logs
+/models
+/Others
+/test_audio
