@@ -2,6 +2,7 @@
 /.venv
 /Commonvoice
 /logs
-/models
+/Models
 /Others
 /test_audio
+/utils/_pycache_

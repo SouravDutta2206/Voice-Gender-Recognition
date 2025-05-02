@@ -6,6 +6,7 @@ import numpy as np
 import librosa
 import soundfile as sf
 from df.enhance import enhance, init_df, load_audio, save_audio
+from utils.utils import dfn_download_model
 
 def snr_filter(audio_path: str, 
                output_path: str = None, 
@@ -42,7 +43,7 @@ def snr_filter(audio_path: str,
 
     sf.write(output_path, filtered_audio*1.2, sr)
 
-df_model, df_state, _ = init_df()
+df_model, df_state, _ = init_df(model_base_dir=dfn_download_model()),
 
 def dfn_filter(audio_path: str, output_path: str = None) -> None:
     """

@@ -16,9 +16,10 @@ from tensorflow.keras.metrics import Precision, Recall, BinaryAccuracy
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay
-
+from df.utils import download_file
 from utils.audio_filters import dfn_filter
 from utils.FeatureExtraction import extract_mfcc, normalize_mfcc
+
 
 def delete_files(dataframe: pd.DataFrame, input_directory: str) -> None:
 
@@ -99,6 +100,29 @@ def process_csv(csv_files: list) -> pd.DataFrame:
     df_CV = pd.concat([df_female,df_male])
     df_CV.replace(to_replace='mp3',value='wav', inplace=True , regex=True)
     return df_CV
+
+#---------------------------------Download DeepFilterNet Model-------------------------------#
+
+def dfn_download_model(name: str = "DeepFilterNet3") -> str:
+    """Download a DeepFilterNet model.
+
+    Args:
+        - name (str): Model name. Currently needs to one of `[DeepFilterNet, DeepFilterNet2]`.
+
+    Returns:
+        - base_dir: Return the model base directory as string.
+    """
+    if name.endswith(".zip"):
+        name = name.removesuffix(".zip")
+    model_dir = os.path.join("Models")
+    os.makedirs(os.path.join(model_dir, name), exist_ok=True)
+    if os.path.isfile(os.path.join(model_dir, name,"config.ini")) or os.path.isdir(
+        os.path.join(model_dir, name,"checkpoints")
+    ):
+        return os.path.join(model_dir, name)
+    url = f"https://github.com/Rikorose/DeepFilterNet/raw/main/models/{name}"
+    download_file(url + ".zip", model_dir, extract=True)
+    return os.path.join(model_dir, name)
 
 #-------------------------------Plot Metrics after Training-------------------------------#
 
