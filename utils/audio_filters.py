@@ -4,9 +4,31 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 
 import numpy as np
 import librosa
+import os
 import soundfile as sf
 from df.enhance import enhance, init_df, load_audio, save_audio
-from utils.utils import dfn_download_model
+from df.utils import download_file
+
+def dfn_download_model(name: str = "DeepFilterNet3") -> str:
+    """Download a DeepFilterNet model.
+
+    Args:
+        - name (str): Model name. Currently needs to one of `[DeepFilterNet, DeepFilterNet2]`.
+
+    Returns:
+        - base_dir: Return the model base directory as string.
+    """
+    if name.endswith(".zip"):
+        name = name.removesuffix(".zip")
+    model_dir = os.path.join("Models")
+    os.makedirs(os.path.join(model_dir, name), exist_ok=True)
+    if os.path.isfile(os.path.join(model_dir, name,"config.ini")) or os.path.isdir(
+        os.path.join(model_dir, name,"checkpoints")
+    ):
+        return os.path.join(model_dir, name)
+    url = f"https://github.com/Rikorose/DeepFilterNet/raw/main/models/{name}"
+    download_file(url + ".zip", model_dir, extract=True)
+    return os.path.join(model_dir, name)
 
 def snr_filter(audio_path: str, 
                output_path: str = None, 
@@ -43,7 +65,9 @@ def snr_filter(audio_path: str,
 
     sf.write(output_path, filtered_audio*1.2, sr)
 
-df_model, df_state, _ = init_df(model_base_dir=dfn_download_model()),
+model_dir = dfn_download_model()
+
+df_model, df_state, _ = init_df(model_base_dir=model_dir)
 
 def dfn_filter(audio_path: str, output_path: str = None) -> None:
     """
